@@ -20,6 +20,7 @@ export type Priority = 'low' | 'medium' | 'high';
 export interface Task {
   id: string;
   user_id: string;
+  goal_id?: string | null;
   title: string;
   description?: string;
   due_date: string;
@@ -126,4 +127,56 @@ export interface AppNotification {
   is_read: boolean;
   created_at: string;
   updated_at: string;
+}
+
+// --- Task History ---
+export type TaskHistoryEventType = 'completed' | 'reflection' | 'skipped_reflection' | 'updated' | 'reopened';
+export type TaskDifficulty = 'easy' | 'normal' | 'hard';
+
+export interface TaskHistory {
+  id: string;
+  task_id: string;
+  user_id: string;
+  event_type: TaskHistoryEventType;
+  content?: string;
+  duration_minutes?: number;
+  mood?: string;
+  difficulty?: TaskDifficulty;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateTaskHistoryInput {
+  task_id: string;
+  event_type: TaskHistoryEventType;
+  content?: string;
+  duration_minutes?: number;
+  mood?: string;
+  difficulty?: TaskDifficulty;
+}
+
+// --- Activities (Momentum Engine) ---
+export type ActivityType = 
+  | 'task_completed' 
+  | 'task_reflection' 
+  | 'note_created' 
+  | 'mentor_review_received';
+
+export interface ActivityMetadata {
+  task_title?: string;
+  note_title?: string;
+  content_preview?: string;
+  comment_preview?: string;
+  mentor_name?: string;
+  [key: string]: any;
+}
+
+export interface AppActivity {
+  id: string;
+  user_id: string;
+  actor_id?: string | null;
+  type: ActivityType;
+  target_id: string;
+  metadata: ActivityMetadata;
+  created_at: string;
 }

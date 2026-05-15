@@ -7,9 +7,16 @@ import { VALIDATION } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
-export function GoalForm() {
+interface GoalFormProps {
+  onSuccess?: () => void
+}
+
+import { useReliability } from '../providers/reliability-provider'
+
+export function GoalForm({ onSuccess }: GoalFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [title, setTitle] = useState('')
+  const { addPendingAction, removePendingAction } = useReliability()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -21,18 +28,33 @@ export function GoalForm() {
       return
     }
 
+    // PHASE 1: Instant feedback
+    const actionId = `create-goal-${Date.now()}`
     setIsSubmitting(true)
-    const formData = new FormData()
-    formData.append('title', cleanTitle)
-    
-    const result = await createGoal(formData)
-    if (result.success) {
-      setTitle('')
-      toast.success('Đã tạo mục tiêu mới')
-    } else {
-      toast.error(result.error || 'Không thể tạo mục tiêu')
+    addPendingAction(actionId)
+
+    onSuccess?.()
+    setTitle('')
+
+    // PHASE 2: Background sync
+    try {
+      const formData = new FormData()
+      formData.append('title', cleanTitle)
+      
+      const result = await createGoal(formData)
+      if (result.success) {
+        toast.success('Mục tiêu lớn đã được ghi nhận thành công')
+      } else {
+        toast.error(`Lỗi tạo mục tiêu: ${result.error}.`, {
+          action: { label: 'Thử lại', onClick: () => handleSubmit(e) }
+        })
+      }
+    } catch (err) {
+      toast.error('Không thể kết nối. Mục tiêu sẽ được thử lại sau.')
+    } finally {
+      setIsSubmitting(false)
+      removePendingAction(actionId)
     }
-    setIsSubmitting(false)
   }
 
   return (

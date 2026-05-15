@@ -14,7 +14,7 @@ export async function getTodayTasks() {
 
   const { data, error } = await supabase
     .from('tasks')
-    .select('id, title, priority, status, created_at')
+    .select('id, title, priority, status, goal_id, created_at')
     .eq('due_date', today)
     .order('created_at', { ascending: false })
 
@@ -33,6 +33,7 @@ export async function createTask(formData: FormData) {
 
   const title = (formData.get('title') as string || '').trim()
   const priority = (formData.get('priority') as 'low' | 'medium' | 'high') || 'medium'
+  const goal_id = formData.get('goal_id') as string || null
 
   if (title.length > VALIDATION.TITLE_MAX_LENGTH) return { error: `Tiêu đề tối đa ${VALIDATION.TITLE_MAX_LENGTH} ký tự` }
 
@@ -40,12 +41,15 @@ export async function createTask(formData: FormData) {
     user_id: user.id,
     title,
     priority,
+    goal_id: goal_id || null,
     status: 'pending'
   })
 
   if (error) return { error: error.message }
   
   revalidatePath(ROUTES.TASKS)
+  // Revalidate goals page in case progress needs to be recalculated (for future)
+  revalidatePath(ROUTES.GOALS)
   return { success: true }
 }
 

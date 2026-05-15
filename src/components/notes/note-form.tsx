@@ -5,22 +5,49 @@ import { createNote } from '@/services/notes'
 import { Plus, Loader2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { VALIDATION } from '@/lib/constants'
+import { toast } from 'sonner'
 
-export function NoteForm() {
+interface NoteFormProps {
+  onSuccess?: () => void
+}
+
+import { useReliability } from '../providers/reliability-provider'
+
+export function NoteForm({ onSuccess }: NoteFormProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { addPendingAction, removePendingAction } = useReliability()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    
+    // PHASE 1: Instant feedback
+    const actionId = `create-note-${Date.now()}`
     setIsSubmitting(true)
-    
+    addPendingAction(actionId)
+
     const formData = new FormData(e.currentTarget)
-    const result = await createNote(formData)
     
-    if (result.success) {
-      setIsOpen(false)
+    // Đóng form ngay lập tức
+    setIsOpen(false)
+    onSuccess?.()
+    
+    // PHASE 2: Background sync
+    try {
+      const result = await createNote(formData)
+      if (result.success) {
+        toast.success('Ghi chú đã được lưu an toàn')
+      } else {
+        toast.error(`Lỗi lưu ghi chú: ${result.error}.`, {
+          action: { label: 'Thử lại', onClick: () => handleSubmit(e) }
+        })
+      }
+    } catch (err) {
+      toast.error('Lỗi kết nối mạng. Ghi chú sẽ được thử lại sau.')
+    } finally {
+      setIsSubmitting(false)
+      removePendingAction(actionId)
     }
-    setIsSubmitting(false)
   }
 
   if (!isOpen) {

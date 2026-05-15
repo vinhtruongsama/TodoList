@@ -20,6 +20,25 @@ export async function getGoals() {
 }
 
 /**
+ * Lấy danh sách mục tiêu đang hoạt động để hiển thị trong Selector.
+ */
+export async function getActiveGoalsForSelect() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('goals')
+    .select('id, title, status')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .limit(20)
+
+  if (error) {
+    console.error('Error fetching goals for select:', error)
+    return []
+  }
+  return data
+}
+
+/**
  * Lấy chi tiết một mục tiêu kèm các bước.
  */
 export async function getGoalWithSteps(goalId: string) {
@@ -101,5 +120,17 @@ export async function toggleStepStatus(stepId: string, currentStatus: string, go
   if (error) return { error: error.message }
   revalidatePath(ROUTES.GOALS)
   revalidatePath(`${ROUTES.GOALS}/${goalId}`)
+  return { success: true }
+}
+
+/**
+ * Xóa mục tiêu.
+ */
+export async function deleteGoal(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('goals').delete().eq('id', id)
+  
+  if (error) return { error: error.message }
+  revalidatePath(ROUTES.GOALS)
   return { success: true }
 }
