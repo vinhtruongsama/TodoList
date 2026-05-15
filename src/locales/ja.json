@@ -1,0 +1,25 @@
+{
+  "common": {
+    "dashboard": "ダッシュボード",
+    "tasks": "タスク",
+    "goals": "目標",
+    "notes": "ノート",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集"
+  },
+  "tasks": {
+    "title": "今日のタスク",
+    "add_task": "新しいタスクを追加",
+    "placeholder": "今日は何をしますか？",
+    "no_tasks": "タスクはありません。"
+  },
+  "goals": {
+    "title": "大きな目標",
+    "add_goal": "目標を追加",
+    "steps": "ステップ"
+  }
+}

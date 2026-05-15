@@ -1,0 +1,25 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "goals": "Goals",
+    "notes": "Notes",
+    "settings": "Settings",
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "tasks": {
+    "title": "Daily Tasks",
+    "add_task": "Add new task",
+    "placeholder": "What's on your mind today?",
+    "no_tasks": "No tasks yet."
+  },
+  "goals": {
+    "title": "Major Goals",
+    "add_goal": "Add Goal",
+    "steps": "Steps"
+  }
+}

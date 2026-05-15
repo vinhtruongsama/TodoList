@@ -1,0 +1,27 @@
+{
+  "common": {
+    "dashboard": "Bảng điều khiển",
+    "tasks": "Nhiệm vụ",
+    "goals": "Mục tiêu",
+    "notes": "Ghi chú",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "reviews": "Nhận xét",
+    "mentors": "Mentor"
+  },
+  "tasks": {
+    "title": "Nhiệm vụ hằng ngày",
+    "add_task": "Thêm nhiệm vụ mới",
+    "placeholder": "Bạn cần làm gì hôm nay?",
+    "no_tasks": "Không có nhiệm vụ nào."
+  },
+  "goals": {
+    "title": "Mục tiêu lớn",
+    "add_goal": "Thêm mục tiêu",
+    "steps": "Các bước thực hiện"
+  }
+}
