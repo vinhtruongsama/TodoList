@@ -40,13 +40,10 @@ export async function createNotification(params: {
  */
 export async function getMyNotifications() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return []
 
   const { data, error } = await supabase
     .from('notifications')
     .select('id, type, title, message, is_read, created_at')
-    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(50)
 
@@ -103,14 +100,11 @@ export async function markAllAsRead() {
  */
 export async function getUnreadCount() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return 0
 
   // Chỉ lấy COUNT, không lấy data (head: true)
   const { count, error } = await supabase
     .from('notifications')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
     .eq('is_read', false)
 
   if (error) return 0

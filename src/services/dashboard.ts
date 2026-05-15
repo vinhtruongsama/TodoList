@@ -5,39 +5,39 @@ import { Task, Goal, LearningNote, UserRole } from '@/types'
 
 export async function getStudentSummary(studentId?: string) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const targetId = studentId || user?.id
-
-  if (!targetId) throw new Error('No target user found')
 
   const today = new Date().toISOString().split('T')[0]
 
   // Lấy dữ liệu song song với field selection tối ưu
-  const tasksPromise = supabase
+  let tasksQuery = supabase
     .from('tasks')
-    .select('id, status') // Chỉ cần id và status để tính progress
-    .eq('user_id', targetId)
+    .select('id, status')
     .eq('due_date', today)
 
-  const goalsPromise = supabase
+  let goalsQuery = supabase
     .from('goals')
     .select('id, title, status, progress_percent, created_at')
-    .eq('user_id', targetId)
     .eq('status', 'active')
     .order('created_at', { ascending: false })
     .limit(2)
 
-  const notesPromise = supabase
+  let notesQuery = supabase
     .from('learning_notes')
     .select('id, title, content, created_at')
-    .eq('user_id', targetId)
     .order('created_at', { ascending: false })
     .limit(3)
 
+  // Nếu mentor xem học sinh, gán ID. Nếu xem chính mình, RLS tự động lo việc filter theo auth.uid()
+  if (studentId) {
+    tasksQuery = tasksQuery.eq('user_id', studentId)
+    goalsQuery = goalsQuery.eq('user_id', studentId)
+    notesQuery = notesQuery.eq('user_id', studentId)
+  }
+
   const [tasksRes, goalsRes, notesRes] = await Promise.all([
-    tasksPromise,
-    goalsPromise,
-    notesPromise
+    tasksQuery,
+    goalsQuery,
+    notesQuery
   ])
 
   const tasks = (tasksRes.data || [])
