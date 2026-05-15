@@ -43,3 +43,25 @@ export function DashboardSkeleton() {
     </div>
   )
 }
+
+export function ActivitySkeleton() {
+  return (
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="flex items-center justify-between px-1">
+        <Skeleton className="h-7 w-48" />
+        <Skeleton className="h-6 w-20" />
+      </div>
+      <div className="space-y-8 pl-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex gap-4">
+            <Skeleton className="h-10 w-10 shrink-0 rounded-2xl" />
+            <div className="flex-1 space-y-3 pt-1">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-24 w-full rounded-2xl" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

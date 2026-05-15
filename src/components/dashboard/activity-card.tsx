@@ -39,7 +39,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       color: 'text-yellow-500',
       bgColor: 'bg-yellow-500/10',
       title: 'Lời khuyên từ Mentor',
-      description: metadata.mentor_name ? `Từ: ${metadata.mentor_name}` : 'Mentor đã phản hồi'
+      description: metadata.mentor_name ? `Nhận phản hồi từ: ${metadata.mentor_name}` : 'Mentor đã phản hồi nỗ lực của bạn'
     }
   }
 

@@ -23,6 +23,8 @@ export function TaskForm({ onSuccess }: TaskFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { addPendingAction, removePendingAction } = useReliability()
 
+  const [isExpanded, setIsExpanded] = useState(false)
+
   // Fetch active goals for select
   useEffect(() => {
     async function loadGoals() {
@@ -53,6 +55,7 @@ export function TaskForm({ onSuccess }: TaskFormProps) {
     
     onSuccess?.()
     setTitle('')
+    setIsExpanded(false) // Collapse after submit
     
     try {
       const formData = new FormData()
@@ -78,78 +81,79 @@ export function TaskForm({ onSuccess }: TaskFormProps) {
   }
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleSubmit} className="relative group">
+    <div className={cn(
+      "space-y-4 bg-card rounded-[2.5rem] p-3 border shadow-sm transition-all duration-500",
+      isExpanded ? "ring-2 ring-primary/20 border-primary/20 p-6" : "hover:border-primary/20"
+    )}>
+      <form onSubmit={handleSubmit} className="relative">
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onFocus={() => setIsExpanded(true)}
           disabled={isSubmitting}
           maxLength={100}
-          placeholder="Thêm nhiệm vụ mới..."
-          className="w-full h-14 pl-5 pr-16 rounded-2xl border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all text-lg disabled:opacity-70"
+          placeholder="Hôm nay bạn muốn đạt được điều gì?"
+          className="w-full h-12 pl-4 pr-14 rounded-2xl bg-transparent focus:ring-0 outline-none transition-all text-lg font-medium placeholder:text-muted-foreground/40 disabled:opacity-70"
         />
         <Button 
           type="submit" 
           loading={isSubmitting}
           disabled={!title.trim()}
-          className="absolute right-2 top-2 h-10 w-10 rounded-xl p-0 transition-transform active:scale-90"
+          className="absolute right-1 top-1 h-10 w-10 rounded-xl p-0 transition-transform active:scale-90"
         >
-          {!isSubmitting && <Plus className="w-6 h-6" />}
+          {!isSubmitting && <Plus className="w-5 h-5" />}
         </Button>
       </form>
 
-      {/* Goal & Priority Selectors */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="relative">
-          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1.5 block ml-1">
-            Gắn với Mục tiêu
-          </label>
-          <div className="relative">
-            <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
-            <select
-              value={selectedGoalId}
-              onChange={(e) => setSelectedGoalId(e.target.value)}
-              className="w-full h-11 pl-10 pr-4 rounded-xl bg-secondary/30 border-none text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all appearance-none outline-none"
-            >
-              <option value="">Không gắn mục tiêu</option>
-              {activeGoals.map(goal => (
-                <option key={goal.id} value={goal.id}>{goal.title}</option>
-              ))}
-            </select>
-          </div>
-          {activeGoals.length === 0 && (
-            <p className="text-[10px] text-muted-foreground mt-1 ml-1 italic">
-              Tạo mục tiêu để liên kết tiến độ học tập.
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1.5 block ml-1">
-            Độ ưu tiên
-          </label>
-          <div className="flex gap-2">
-            {(['low', 'medium', 'high'] as const).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPriority(p)}
-                className={cn(
-                  "flex-1 h-11 rounded-xl text-xs font-bold uppercase tracking-tighter transition-all border",
-                  priority === p 
-                    ? p === 'high' ? "bg-red-500 text-white border-red-600 shadow-lg shadow-red-500/20" :
-                      p === 'medium' ? "bg-orange-500 text-white border-orange-600 shadow-lg shadow-orange-500/20" :
-                      "bg-blue-500 text-white border-blue-600 shadow-lg shadow-blue-500/20"
-                    : "bg-secondary/30 border-transparent text-muted-foreground hover:bg-secondary/50"
-                )}
+      {/* Goal & Priority Selectors - Revealed on expansion */}
+      {isExpanded && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/40 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 block ml-1">
+              Gắn với Mục tiêu
+            </label>
+            <div className="relative">
+              <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+              <select
+                value={selectedGoalId}
+                onChange={(e) => setSelectedGoalId(e.target.value)}
+                className="w-full h-11 pl-10 pr-4 rounded-xl bg-secondary/40 border-none text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all appearance-none outline-none cursor-pointer"
               >
-                {p}
-              </button>
-            ))}
+                <option value="">Không gắn mục tiêu</option>
+                {activeGoals.map(goal => (
+                  <option key={goal.id} value={goal.id}>{goal.title}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 block ml-1">
+              Độ ưu tiên
+            </label>
+            <div className="flex gap-2">
+              {(['low', 'medium', 'high'] as const).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPriority(p)}
+                  className={cn(
+                    "flex-1 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border outline-none",
+                    priority === p 
+                      ? p === 'high' ? "bg-red-500 text-white border-red-600 shadow-md shadow-red-500/10" :
+                        p === 'medium' ? "bg-orange-500 text-white border-orange-600 shadow-md shadow-orange-500/10" :
+                        "bg-blue-500 text-white border-blue-600 shadow-md shadow-blue-500/10"
+                      : "bg-secondary/40 border-transparent text-muted-foreground/60 hover:bg-secondary/60"
+                  )}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

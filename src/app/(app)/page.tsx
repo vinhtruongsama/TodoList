@@ -5,7 +5,7 @@ import { QuickActionDrawer } from '@/components/dashboard/quick-action-drawer'
 import { RecentNotes } from '@/components/dashboard/recent-notes'
 import { GoalItem } from '@/components/goals/goal-item'
 import { LayoutGrid } from 'lucide-react'
-import { DashboardSkeleton } from '@/components/dashboard/dashboard-skeleton'
+import { DashboardSkeleton, ActivitySkeleton } from '@/components/dashboard/dashboard-skeleton'
 import { MomentumFeed } from '@/components/dashboard/momentum-feed'
 
 export default async function DashboardPage() {
@@ -56,33 +56,57 @@ async function DashboardContent() {
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Thống kê nhanh */}
-      <StatsCards stats={data.stats} />
+      {/* Header-like Section for Stats */}
+      <section className="space-y-6">
+        <StatsCards stats={data.stats} />
+        <QuickActionDrawer />
+      </section>
 
-      {/* Thao tác nhanh */}
-      <QuickActionDrawer />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* Main Feed Section (Left/Center on Desktop) */}
+        <div className="lg:col-span-2 space-y-12">
+          {/* Dòng chảy tiến bộ (Momentum Engine) */}
+          <Suspense fallback={<ActivitySkeleton />}>
+            <MomentumFeed />
+          </Suspense>
 
-      {/* Dòng chảy tiến bộ (Momentum Engine) */}
-      <Suspense fallback={<div className="h-40 bg-secondary/10 animate-pulse rounded-3xl" />}>
-        <MomentumFeed />
-      </Suspense>
+          {/* Mục tiêu đang chạy */}
+          {data.activeGoals.length > 0 && (
+            <section className="space-y-6">
+              <div className="flex items-center justify-between px-1 border-b pb-2 border-border/40">
+                <h2 className="text-xl font-bold tracking-tight">Mục tiêu đang chạy</h2>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                  Active
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.activeGoals.slice(0, 4).map(goal => (
+                  <GoalItem key={goal.id} goal={goal} />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
 
-      {/* Mục tiêu đang chạy */}
-      {data.activeGoals.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-xl font-bold">Mục tiêu đang chạy</h2>
+        {/* Secondary Info (Right Sidebar on Desktop) */}
+        <div className="space-y-12">
+          {/* Ghi chú mới nhất */}
+          <section className="bg-secondary/10 rounded-[2.5rem] p-8 border border-border/40">
+            <RecentNotes notes={data.recentNotes} />
+          </section>
+
+          {/* Productivity Tip or Small Static Card (Polish) */}
+          <div className="bg-primary/5 rounded-[2rem] p-6 border border-primary/10">
+            <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Productivity Tip
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Tập trung vào 3 nhiệm vụ quan trọng nhất mỗi ngày để đạt được đà tiến bộ bền vững nhất.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {data.activeGoals.map(goal => (
-              <GoalItem key={goal.id} goal={goal} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Ghi chú mới nhất */}
-      <RecentNotes notes={data.recentNotes} />
+        </div>
+      </div>
     </div>
   )
 }

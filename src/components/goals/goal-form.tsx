@@ -64,8 +64,8 @@ export function GoalForm({ onSuccess }: GoalFormProps) {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         disabled={isSubmitting}
-        placeholder="Tạo mục tiêu lớn mới..."
-        className="w-full h-14 pl-5 pr-16 rounded-2xl border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all text-lg disabled:opacity-70"
+        placeholder="Mục tiêu lớn tiếp theo của bạn là gì?"
+        className="w-full h-14 pl-5 pr-16 rounded-[2rem] border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all text-lg font-medium disabled:opacity-70"
       />
       <Button 
         type="submit" 
