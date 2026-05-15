@@ -12,9 +12,10 @@ export async function getNotes() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('learning_notes')
-    .select('*')
+    .select('id, title, content, note_date, created_at')
     .order('note_date', { ascending: false })
     .order('created_at', { ascending: false })
+    .limit(30)
 
   if (error) throw new Error(error.message)
   return data as LearningNote[]

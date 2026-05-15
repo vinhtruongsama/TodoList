@@ -2,32 +2,35 @@
 
 import React, { useState } from 'react'
 import { createGoal } from '@/services/goals'
-import { Plus, Loader2, Target } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { VALIDATION } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 export function GoalForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [title, setTitle] = useState('')
-  const [error, setError] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!title.trim()) return
+    const cleanTitle = title.trim()
+    if (!cleanTitle) return
 
-    if (title.length > VALIDATION.TITLE_MAX_LENGTH) {
-      setError(`Tiêu đề tối đa ${VALIDATION.TITLE_MAX_LENGTH} ký tự`)
+    if (cleanTitle.length > VALIDATION.TITLE_MAX_LENGTH) {
+      toast.error(`Tiêu đề tối đa ${VALIDATION.TITLE_MAX_LENGTH} ký tự`)
       return
     }
 
     setIsSubmitting(true)
     const formData = new FormData()
-    formData.append('title', title)
+    formData.append('title', cleanTitle)
     
     const result = await createGoal(formData)
     if (result.success) {
       setTitle('')
-      setError('')
+      toast.success('Đã tạo mục tiêu mới')
+    } else {
+      toast.error(result.error || 'Không thể tạo mục tiêu')
     }
     setIsSubmitting(false)
   }
@@ -38,15 +41,17 @@ export function GoalForm() {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        disabled={isSubmitting}
         placeholder="Tạo mục tiêu lớn mới..."
-        className="w-full h-14 pl-5 pr-16 rounded-2xl border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all text-lg"
+        className="w-full h-14 pl-5 pr-16 rounded-2xl border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all text-lg disabled:opacity-70"
       />
       <Button 
         type="submit" 
-        disabled={isSubmitting || !title.trim()}
+        loading={isSubmitting}
+        disabled={!title.trim()}
         className="absolute right-2 top-2 h-10 w-10 rounded-xl p-0"
       >
-        {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-6 h-6" />}
+        {!isSubmitting && <Plus className="w-6 h-6" />}
       </Button>
     </form>
   )

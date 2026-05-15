@@ -7,6 +7,8 @@ import { CheckCircle2, Circle, Trash2, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PRIORITY_COLORS } from '@/lib/constants'
 
+import { toast } from 'sonner'
+
 interface TaskItemProps {
   task: Task
 }
@@ -14,25 +16,44 @@ interface TaskItemProps {
 export function TaskItem({ task }: TaskItemProps) {
   const [isToggling, setIsToggling] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [optimisticStatus, setOptimisticStatus] = useState(task.status)
 
   const handleToggle = async () => {
+    const newStatus = optimisticStatus === 'completed' ? 'pending' : 'completed'
+    setOptimisticStatus(newStatus)
     setIsToggling(true)
-    await toggleTaskStatus(task.id, task.status)
-    setIsToggling(false)
+    
+    try {
+      const result = await toggleTaskStatus(task.id, task.status)
+      if (result && 'error' in result && result.error) {
+        setOptimisticStatus(task.status) // Rollback
+        toast.error(result.error)
+      }
+    } catch (error) {
+      setOptimisticStatus(task.status) // Rollback
+      toast.error('Không thể kết nối máy chủ')
+    } finally {
+      setIsToggling(false)
+    }
   }
 
   const handleDelete = async () => {
-    if (!confirm('Bạn có chắc muốn xóa task này?')) return
+    if (!confirm('Bạn có chắc muốn xóa nhiệm vụ này?')) return
     setIsDeleting(true)
     const result = await deleteTask(task.id)
-    if (!result.success) setIsDeleting(false)
+    if (result && 'error' in result && result.error) {
+      toast.error(result.error)
+      setIsDeleting(false)
+    } else {
+      toast.success('Đã xóa nhiệm vụ')
+    }
   }
 
   return (
     <div 
       className={cn(
         "flex items-center p-4 rounded-2xl border bg-card transition-all group",
-        task.status === 'completed' ? "opacity-60 bg-accent/30" : "hover:border-primary/50 shadow-sm",
+        optimisticStatus === 'completed' ? "opacity-60 bg-accent/30" : "hover:border-primary/50 shadow-sm",
         isDeleting && "scale-95 opacity-50"
       )}
     >
@@ -43,7 +64,7 @@ export function TaskItem({ task }: TaskItemProps) {
       >
         {isToggling ? (
           <Loader2 className="w-6 h-6 animate-spin" />
-        ) : task.status === 'completed' ? (
+        ) : optimisticStatus === 'completed' ? (
           <CheckCircle2 className="w-6 h-6 fill-primary text-white" />
         ) : (
           <Circle className="w-6 h-6" />
@@ -53,7 +74,7 @@ export function TaskItem({ task }: TaskItemProps) {
       <div className="flex-1 min-w-0">
         <p className={cn(
           "font-semibold text-lg truncate",
-          task.status === 'completed' && "line-through decoration-2"
+          optimisticStatus === 'completed' && "line-through decoration-2"
         )}>
           {task.title}
         </p>

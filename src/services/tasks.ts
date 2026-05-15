@@ -14,7 +14,7 @@ export async function getTodayTasks() {
 
   const { data, error } = await supabase
     .from('tasks')
-    .select('*')
+    .select('id, title, priority, status, created_at')
     .eq('due_date', today)
     .order('created_at', { ascending: false })
 

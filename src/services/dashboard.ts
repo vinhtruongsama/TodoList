@@ -12,16 +12,16 @@ export async function getStudentSummary(studentId?: string) {
 
   const today = new Date().toISOString().split('T')[0]
 
-  // Lấy dữ liệu song song để tối ưu tốc độ
+  // Lấy dữ liệu song song với field selection tối ưu
   const tasksPromise = supabase
     .from('tasks')
-    .select('*')
+    .select('id, status') // Chỉ cần id và status để tính progress
     .eq('user_id', targetId)
     .eq('due_date', today)
 
   const goalsPromise = supabase
     .from('goals')
-    .select('*')
+    .select('id, title, status, progress_percent, created_at')
     .eq('user_id', targetId)
     .eq('status', 'active')
     .order('created_at', { ascending: false })
@@ -29,7 +29,7 @@ export async function getStudentSummary(studentId?: string) {
 
   const notesPromise = supabase
     .from('learning_notes')
-    .select('*')
+    .select('id, title, content, created_at')
     .eq('user_id', targetId)
     .order('created_at', { ascending: false })
     .limit(3)
@@ -40,7 +40,7 @@ export async function getStudentSummary(studentId?: string) {
     notesPromise
   ])
 
-  const tasks = (tasksRes.data || []) as Task[]
+  const tasks = (tasksRes.data || [])
   const totalTasks = tasks.length
   const completedTasks = tasks.filter(t => t.status === 'completed').length
   const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0

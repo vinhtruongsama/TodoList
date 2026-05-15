@@ -12,7 +12,7 @@ export async function getGoals() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('goals')
-    .select('*')
+    .select('id, title, status, progress_percent, created_at')
     .order('created_at', { ascending: false })
 
   if (error) throw new Error(error.message)
@@ -25,8 +25,8 @@ export async function getGoals() {
 export async function getGoalWithSteps(goalId: string) {
   const supabase = await createClient()
   
-  const goalPromise = supabase.from('goals').select('*').eq('id', goalId).single()
-  const stepsPromise = supabase.from('goal_steps').select('*').eq('goal_id', goalId).order('order_index', { ascending: true })
+  const goalPromise = supabase.from('goals').select('id, title, description, status, progress_percent, created_at').eq('id', goalId).single()
+  const stepsPromise = supabase.from('goal_steps').select('id, title, status, order_index').eq('goal_id', goalId).order('order_index', { ascending: true })
 
   const [goalRes, stepsRes] = await Promise.all([goalPromise, stepsPromise])
 
