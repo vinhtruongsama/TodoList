@@ -11,34 +11,34 @@ interface StatsCardsProps {
 
 export function StatsCards({ stats }: StatsCardsProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-      <div className="p-6 rounded-[2.5rem] bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-[0_20px_50px_rgba(var(--primary),0.2)] flex flex-col justify-between aspect-square md:aspect-auto md:h-48 group hover:scale-[1.02] transition-transform duration-500">
-        <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm ring-1 ring-white/30">
-          <Zap className="w-6 h-6 fill-white animate-pulse" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-5xl font-black tracking-tighter tabular-nums leading-none">{stats.progressPercent}<span className="text-xl font-medium opacity-60 ml-1">%</span></p>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-70">Day Progress</p>
-        </div>
-      </div>
-
-      <div className="p-6 rounded-[2.5rem] bg-card/50 backdrop-blur-md border border-foreground/5 shadow-sm flex flex-col justify-between aspect-square md:aspect-auto md:h-48 group hover:border-primary/20 transition-all duration-500">
-        <div className="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center ring-1 ring-green-500/20">
-          <CheckCircle2 className="w-6 h-6 text-green-500" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-5xl font-black tracking-tighter tabular-nums leading-none">{stats.completedTasks}</p>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Completed</p>
+    <div className="flex flex-col sm:flex-row items-center gap-8 px-8 py-6 rounded-xl bg-card border border-border shadow-sm">
+      {/* Primary Progress */}
+      <div className="flex items-center gap-6 flex-1 w-full">
+        <Zap className="w-5 h-5 text-primary shrink-0 opacity-80" />
+        <div className="flex-1 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 leading-none">Tiến độ hằng ngày</p>
+            <span className="text-xs font-black text-primary/80">{stats.progressPercent}%</span>
+          </div>
+          <div className="w-full h-1.5 bg-secondary/60 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-primary transition-all duration-1000 ease-out" 
+              style={{ width: `${stats.progressPercent}%` }} 
+            />
+          </div>
         </div>
       </div>
 
-      <div className="p-6 rounded-[2.5rem] bg-card/50 backdrop-blur-md border border-foreground/5 shadow-sm flex flex-col justify-between hidden md:flex h-48 group hover:border-primary/20 transition-all duration-500">
-        <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center ring-1 ring-blue-500/20">
-          <ListTodo className="w-6 h-6 text-blue-500" />
+      {/* Secondary Metrics - Naked text badges */}
+      <div className="flex gap-4 shrink-0">
+        <div className="flex flex-col items-center sm:items-start">
+          <span className="text-[10px] font-bold text-green-600/70 uppercase tracking-tighter">{stats.completedTasks}</span>
+          <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">Xong</span>
         </div>
-        <div className="space-y-1">
-          <p className="text-5xl font-black tracking-tighter tabular-nums leading-none">{stats.totalTasks}</p>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Total Scope</p>
+        <div className="w-px h-6 bg-border/40 hidden sm:block" />
+        <div className="flex flex-col items-center sm:items-start">
+          <span className="text-[10px] font-bold text-blue-600/70 uppercase tracking-tighter">{stats.totalTasks}</span>
+          <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">Tổng</span>
         </div>
       </div>
     </div>

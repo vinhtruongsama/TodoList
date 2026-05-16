@@ -156,27 +156,27 @@ export function TaskItem({ task }: TaskItemProps) {
         
         <div className="flex-1 min-w-0">
           <p className={cn(
-            "font-medium text-base tracking-tight truncate",
+            "font-semibold text-[15px] tracking-tight truncate",
             optimisticStatus === 'completed' ? "text-muted-foreground line-through decoration-1" : "text-foreground"
           )}>
             {task.title}
           </p>
-          <div className="flex items-center gap-3 mt-1.5">
+          <div className="flex items-center gap-3 mt-1 text-[11px] font-medium">
             <span className={cn(
-              "text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-[0.1em] border",
-              task.priority === 'high' ? "bg-red-500/10 text-red-500 border-red-500/20" :
-              task.priority === 'medium' ? "bg-orange-500/10 text-orange-500 border-orange-500/20" :
-              "bg-blue-500/10 text-blue-500 border-blue-500/20"
+              "px-1.5 py-0.5 rounded-md border",
+              task.priority === 'high' ? "bg-red-50 text-red-600 border-red-200" :
+              task.priority === 'medium' ? "bg-orange-50 text-orange-600 border-orange-200" :
+              "bg-blue-50 text-blue-600 border-blue-200"
             )}>
-              {task.priority}
+              {task.priority === 'high' ? 'Cao' : task.priority === 'medium' ? 'Trung bình' : 'Thấp'}
             </span>
             {task.goal_id && (
-              <span className="flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-[0.1em] bg-purple-500/10 text-purple-600 border border-purple-500/20">
-                <Target className="w-2.5 h-2.5" />
+              <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+                <Target className="w-3 h-3" />
                 Mục tiêu
               </span>
             )}
-            <span className="text-[10px] text-muted-foreground font-medium">Updated just now</span>
+            <span className="text-muted-foreground/60">{new Date(task.updated_at).toLocaleDateString('vi-VN')}</span>
           </div>
         </div>
 

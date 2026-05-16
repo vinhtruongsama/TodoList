@@ -38,43 +38,40 @@ export function GoalItem({ goal }: GoalItemProps) {
 
   return (
     <div className={cn(
-      "relative transition-all duration-300",
+      "relative transition-all duration-700 ease-in-out",
       isDeleting && "scale-95 opacity-0 grayscale pointer-events-none"
     )}>
       <Link 
-        href={`${ROUTES.GOALS}/${goal.id}`}
-        className="block p-5 rounded-3xl border bg-card hover:border-primary/50 transition-all shadow-sm active:scale-[0.98]"
+        href={`/goals/${goal.id}`}
+        className="group block bg-card border border-border shadow-sm rounded-2xl overflow-hidden transition-all active:scale-[0.98] hover:border-primary/40"
       >
-        <div className="flex items-start justify-between mb-4">
-          <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
-            {isDeleting ? <Loader2 className="w-6 h-6 text-primary animate-spin" /> : <Target className="w-6 h-6 text-primary" />}
-          </div>
-          <div className="flex items-center gap-1">
-            <ActionMenu 
-              onDelete={handleDelete}
-              onEdit={() => toast.info('Tính năng chỉnh sửa đang phát triển')}
-            />
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </div>
-        </div>
-
-        <h3 className="text-lg font-bold tracking-tight mb-2 truncate group-hover:text-primary transition-colors">{goal.title}</h3>
-        
-        {/* Progress Bar - Liquid Style */}
-        <div className="space-y-3 mt-6">
-          <div className="flex justify-between items-end">
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Completion</span>
-              <p className="text-2xl font-black tracking-tighter tabular-nums leading-none">
-                {goal.progress_percent}<span className="text-sm font-medium text-muted-foreground/60 ml-0.5">%</span>
-              </p>
+        <div className="p-5 space-y-6">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Mục tiêu</span>
+              <h3 className="text-lg font-bold tracking-tight text-foreground line-clamp-1">
+                {goal.title}
+              </h3>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center border border-primary/10 transition-colors group-hover:bg-primary/10">
+              <Target className="w-5 h-5 text-primary" />
             </div>
           </div>
-          <div className="relative h-2 w-full bg-secondary rounded-full overflow-hidden">
-            <div 
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/60 transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(var(--primary),0.3)]" 
-              style={{ width: `${goal.progress_percent}%` }}
-            />
+
+          <div className="space-y-3">
+            <div className="flex items-end justify-between">
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black text-foreground">{Math.round(goal.progress_percent || 0)}%</span>
+                <span className="text-[11px] font-bold text-muted-foreground uppercase">Tiến độ</span>
+              </div>
+            </div>
+            
+            <div className="relative h-2 w-full bg-secondary rounded-full overflow-hidden">
+              <div 
+                className="absolute h-full left-0 top-0 bg-primary transition-all duration-1000 ease-out"
+                style={{ width: `${goal.progress_percent || 0}%` }}
+              />
+            </div>
           </div>
         </div>
       </Link>

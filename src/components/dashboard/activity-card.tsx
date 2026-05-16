@@ -47,47 +47,35 @@ export function ActivityCard({ activity }: ActivityCardProps) {
   const Icon = currentConfig.icon
 
   return (
-    <div className="group relative flex gap-4 pb-8 last:pb-0">
-      {/* Timeline Line */}
-      <div className="absolute left-[19px] top-10 bottom-0 w-[2px] bg-border/40 group-last:hidden" />
-      
-      {/* Icon Node */}
-      <div className={cn(
-        "relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl transition-transform group-hover:scale-110",
-        currentConfig.bgColor
-      )}>
-        <Icon className={cn("h-5 w-5", currentConfig.color)} />
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-col gap-1.5 pt-1">
-        <div className="flex items-center gap-2">
-          <h4 className="text-sm font-bold tracking-tight text-foreground/90">
+    <div className="group flex flex-col gap-2">
+      {/* Header Info */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Icon className={cn("h-4 w-4 opacity-70", currentConfig.color)} />
+          <h4 className="text-xs font-bold tracking-tight text-foreground/90">
             {currentConfig.title}
           </h4>
-          <span className="flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
-            <Clock className="w-2.5 h-2.5" />
-            {formatDistanceToNow(new Date(created_at), { addSuffix: true, locale: vi })}
-          </span>
         </div>
+        <span className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/60">
+          <Clock className="w-2.5 h-2.5" />
+          {formatDistanceToNow(new Date(created_at), { addSuffix: true, locale: vi })}
+        </span>
+      </div>
 
-        <div className="bg-card/50 border rounded-2xl p-4 shadow-sm group-hover:shadow-md transition-all">
-          <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-            {currentConfig.description}
-          </p>
-          
-          {metadata.content_preview && (
-            <div className="mt-3 text-sm text-foreground/80 italic border-l-2 border-primary/20 pl-3 py-1 line-clamp-2 bg-primary/5 rounded-r-lg">
-              "{metadata.content_preview}..."
-            </div>
-          )}
-
-          {metadata.comment_preview && (
-            <div className="mt-3 text-sm text-foreground/80 font-medium border-l-2 border-yellow-500/20 pl-3 py-1 line-clamp-2 bg-yellow-500/5 rounded-r-lg">
-              "{metadata.comment_preview}..."
-            </div>
-          )}
-        </div>
+      {/* Main Content Box */}
+      <div className="bg-card border border-border/40 rounded-xl p-3 shadow-sm hover:border-primary/20 transition-all">
+        <p className="text-[13px] text-muted-foreground font-medium leading-relaxed">
+          {currentConfig.description}
+        </p>
+        
+        {(metadata.content_preview || metadata.comment_preview) && (
+          <div className={cn(
+            "mt-2 text-[12px] italic border-l-2 pl-3 py-1.5 line-clamp-2 rounded-r-md bg-secondary/30",
+            metadata.comment_preview ? "border-yellow-500/30 text-foreground/80" : "border-primary/20 text-muted-foreground"
+          )}>
+            "{metadata.content_preview || metadata.comment_preview}..."
+          </div>
+        )}
       </div>
     </div>
   )

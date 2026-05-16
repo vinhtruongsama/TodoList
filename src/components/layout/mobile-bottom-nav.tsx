@@ -19,8 +19,8 @@ export function MobileBottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-background/80 backdrop-blur-lg">
-      <div className="flex justify-around items-center h-16">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-xl pb-safe">
+      <div className="flex justify-around items-center h-20 px-2">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href
@@ -29,16 +29,29 @@ export function MobileBottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center w-full h-full space-y-1 transition-all",
-                isActive ? "text-primary scale-110" : "text-muted-foreground hover:text-foreground"
+                "relative flex flex-col items-center justify-center flex-1 h-full pt-1 pb-2 transition-all",
+                isActive ? "text-primary" : "text-muted-foreground/80"
               )}
             >
-              {item.isNotification ? (
-                <NotificationIndicator iconClassName={cn("w-5 h-5", isActive ? "text-primary" : "text-muted-foreground")} />
-              ) : (
-                <Icon className="w-5 h-5" />
+              {isActive && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary rounded-b-full" />
               )}
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <div className={cn(
+                "flex items-center justify-center w-8 h-8 rounded-full mb-1 transition-colors",
+                isActive ? "bg-primary/10" : "bg-transparent"
+              )}>
+                {item.isNotification ? (
+                  <NotificationIndicator iconClassName="w-6 h-6" />
+                ) : (
+                  <Icon className="w-6 h-6" />
+                )}
+              </div>
+              <span className={cn(
+                "text-[11px] font-bold tracking-tight",
+                isActive ? "text-primary" : "text-muted-foreground"
+              )}>
+                {item.label}
+              </span>
             </Link>
           )
         })}

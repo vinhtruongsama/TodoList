@@ -7,6 +7,7 @@ import { Home, CheckSquare, Target, BookOpen, Bell, LogOut, User } from 'lucide-
 import { cn } from '@/lib/utils'
 import { signOut } from '@/services/auth'
 import { NotificationIndicator } from '../notifications/notification-indicator'
+import { ThemeToggle } from './theme-toggle'
 
 const navItems = [
   { icon: Home, label: 'Dashboard', href: '/' },
@@ -21,22 +22,25 @@ export function DesktopSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 w-64 border-r bg-sidebar border-sidebar-border/50">
-      <div className="px-7 py-8">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-            <Target className="w-5 h-5 text-primary-foreground" />
+    <aside className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 w-64 bg-card border-r z-50">
+      <div className="px-6 py-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <Target className="w-5 h-5 text-primary-foreground" />
+            </div>
+            <h1 className="text-xl font-bold tracking-tight text-foreground">
+              EduTrack
+            </h1>
           </div>
-          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
-            EduTrack
-          </h1>
+          <ThemeToggle />
         </div>
       </div>
       
-      <div className="flex-1 px-3 space-y-8 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 px-3 space-y-8 overflow-y-auto custom-scrollbar pb-10">
         {/* Workspace Section */}
-        <div className="space-y-1">
-          <p className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-sidebar-foreground/40 mb-2">Workspace</p>
+        <nav className="space-y-1">
+          <p className="px-3 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-wider mb-2">Không gian học</p>
           {navItems.slice(0, 4).map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
@@ -45,25 +49,22 @@ export function DesktopSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group flex items-center space-x-3 px-4 py-2 rounded-xl transition-all duration-200 text-sm font-medium",
+                  "group flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all text-sm font-semibold",
                   isActive 
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm ring-1 ring-sidebar-border" 
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+                    ? "bg-primary text-primary-foreground" 
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 )}
               >
-                <Icon className={cn(
-                  "w-4.5 h-4.5 transition-colors stroke-[1.5]",
-                  isActive ? "text-primary" : "text-sidebar-foreground/50 group-hover:text-sidebar-accent-foreground"
-                )} />
-                <span className="tracking-tight">{item.label}</span>
+                <Icon className="w-5 h-5 shrink-0" />
+                <span>{item.label}</span>
               </Link>
             )
           })}
-        </div>
+        </nav>
 
         {/* Community & Alerts */}
-        <div className="space-y-1">
-          <p className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-sidebar-foreground/40 mb-2">Network</p>
+        <nav className="space-y-1">
+          <p className="px-3 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-wider mb-2">Kết nối</p>
           {navItems.slice(4).map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
@@ -72,46 +73,41 @@ export function DesktopSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group flex items-center space-x-3 px-4 py-2 rounded-xl transition-all duration-200 text-sm font-medium",
+                  "group flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all text-sm font-semibold",
                   isActive 
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm ring-1 ring-sidebar-border" 
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+                    ? "bg-primary text-primary-foreground" 
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 )}
               >
                 {item.isNotification ? (
-                  <NotificationIndicator iconClassName={cn("w-4.5 h-4.5 stroke-[1.5]", isActive ? "text-primary" : "text-sidebar-foreground/50 group-hover:text-sidebar-accent-foreground")} />
+                  <NotificationIndicator iconClassName="w-5 h-5" />
                 ) : (
-                  <Icon className={cn(
-                    "w-4.5 h-4.5 transition-colors stroke-[1.5]",
-                    isActive ? "text-primary" : "text-sidebar-foreground/50 group-hover:text-sidebar-accent-foreground"
-                  )} />
+                  <Icon className="w-5 h-5 shrink-0" />
                 )}
-                <span className="tracking-tight">{item.label}</span>
+                <span>{item.label}</span>
               </Link>
             )
           })}
-        </div>
+        </nav>
       </div>
 
-      <div className="p-4 mt-auto">
-        <div className="p-3 rounded-2xl bg-sidebar-accent/30 border border-sidebar-border/50 space-y-3">
-          <div className="flex items-center gap-3 px-1">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-primary/20">
-              <User className="w-4 h-4 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold truncate tracking-tight">Student</p>
-              <p className="text-[10px] text-sidebar-foreground/50 truncate">Premium Plan</p>
-            </div>
+      <div className="p-4 border-t bg-secondary/20">
+        <div className="flex items-center gap-3 px-2 mb-4">
+          <div className="w-9 h-9 rounded-full bg-background flex items-center justify-center border shadow-sm">
+            <User className="w-5 h-5 text-muted-foreground" />
           </div>
-          <button 
-            onClick={() => signOut()}
-            className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-xl text-[11px] font-bold text-sidebar-foreground/60 hover:bg-destructive/10 hover:text-destructive transition-all group"
-          >
-            <LogOut className="w-3.5 h-3.5 group-hover:text-destructive" />
-            <span>Sign Out</span>
-          </button>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold truncate">Học viên</p>
+            <p className="text-[10px] text-primary font-bold uppercase">Gói Premium</p>
+          </div>
         </div>
+        <button 
+          onClick={() => signOut()}
+          className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>Đăng xuất</span>
+        </button>
       </div>
     </aside>
   )

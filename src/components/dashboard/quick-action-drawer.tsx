@@ -30,12 +30,12 @@ export function QuickActionDrawer() {
   }
 
   return (
-    <section className="space-y-4">
-      <div className="flex items-center justify-between px-1">
-        <h2 className="text-xl font-bold">Thao tác nhanh</h2>
+    <section className="space-y-3">
+      <div className="flex items-center justify-between px-1 border-b border-border/10 pb-1">
+        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Thao tác nhanh</h2>
       </div>
       
-      <div className="grid grid-cols-3 gap-3 md:gap-4">
+      <div className="flex flex-wrap gap-2">
         {actions.map((action) => (
           <button 
             key={action.id}
@@ -43,15 +43,10 @@ export function QuickActionDrawer() {
               setOpen(true)
               handleAction(action.id as ActionType)
             }}
-            className="flex flex-col items-center justify-center p-4 rounded-3xl bg-card border shadow-sm hover:border-primary/50 transition-all active:scale-95 space-y-2 group"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-card border border-border hover:border-primary/40 hover:bg-secondary/50 transition-all active:scale-95 group"
           >
-            <div className={cn(
-              "w-12 h-12 rounded-2xl flex items-center justify-center text-white transition-transform group-hover:scale-110 shadow-lg",
-              action.color
-            )}>
-              <action.icon className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-bold">{action.title}</span>
+            <action.icon className={cn("w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity", action.color.replace('bg-', 'text-'))} />
+            <span className="text-[11px] font-bold tracking-tight">{action.title}</span>
           </button>
         ))}
       </div>

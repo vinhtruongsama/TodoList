@@ -10,11 +10,13 @@ interface NoteListProps {
 export function NoteList({ notes }: NoteListProps) {
   if (notes.length === 0) {
     return (
-      <div className="text-center py-20 bg-orange-50/50 rounded-3xl border-2 border-dashed border-orange-200/50 flex flex-col items-center">
-        <BookOpen className="w-12 h-12 text-orange-200 mb-4" />
-        <p className="text-muted-foreground font-medium">Chưa có ghi chú nào.</p>
-        <p className="text-sm text-muted-foreground max-w-[200px] mx-auto">
-          Hãy bắt đầu ghi lại những kiến thức quý giá bạn vừa học được!
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-secondary/20 rounded-2xl border border-dashed border-border/60">
+        <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center shadow-sm mb-4">
+          <BookOpen className="w-8 h-8 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-bold">Sổ tay còn trống</h3>
+        <p className="text-sm text-muted-foreground mt-2 max-w-[280px]">
+          Hãy bắt đầu ghi lại những kiến thức và kinh nghiệm quý giá bạn đã học được ngay hôm nay.
         </p>
       </div>
     )

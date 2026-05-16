@@ -82,7 +82,7 @@ export function TaskForm({ onSuccess }: TaskFormProps) {
 
   return (
     <div className={cn(
-      "space-y-4 bg-card rounded-[2.5rem] p-3 border shadow-sm transition-all duration-500",
+      "space-y-4 bg-card rounded-xl p-3 border shadow-sm transition-all duration-300",
       isExpanded ? "ring-2 ring-primary/20 border-primary/20 p-6" : "hover:border-primary/20"
     )}>
       <form onSubmit={handleSubmit} className="relative">

@@ -30,8 +30,8 @@ export async function getMomentumFeed(
     .range(offset, offset + limit - 1)
 
   if (error) {
-    console.error('Error fetching momentum feed:', error)
-    return { success: false, error: error.message }
+    console.error('Error fetching momentum feed:', error.message, error.code, error.details)
+    return { success: false, error: error.message || 'Unknown database error' }
   }
 
   return { 

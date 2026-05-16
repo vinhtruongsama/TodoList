@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Sans_JP } from "next/font/google";
+import { Inter, Noto_Sans_JP, Caveat } from "next/font/google";
 import { Providers } from "@/components/providers/providers";
 import "./globals.css";
 
@@ -14,6 +14,11 @@ const notoJP = Noto_Sans_JP({
   weight: ["400", "500", "700"],
 });
 
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin", "vietnamese"],
+});
+
 export const metadata: Metadata = {
   title: "EduTrack - Learning & Task Management",
   description: "Manage your studies and work with ease. Connect with mentors and track progress.",
@@ -26,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${notoJP.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${notoJP.variable} ${caveat.variable} font-sans antialiased`} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

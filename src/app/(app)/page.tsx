@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react'
+import Link from 'next/link'
 import { getStudentSummary, getUserRole } from '@/services/dashboard'
 import { StatsCards } from '@/components/dashboard/stats-cards'
 import { QuickActionDrawer } from '@/components/dashboard/quick-action-drawer'
@@ -17,13 +18,10 @@ export default async function DashboardPage() {
   })
 
   return (
-    <div className="p-6 md:p-10 max-w-6xl mx-auto space-y-12 pb-40">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="animate-in fade-in slide-in-from-left-4 duration-1000">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-2">Workspace Overview</p>
-          <h1 className="text-4xl font-black tracking-tighter">Chào buổi sáng! 👋</h1>
-          <p className="text-muted-foreground mt-1 font-medium">{formattedDate}</p>
-        </div>
+    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-10 pb-32">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight">{formattedDate}</h1>
+        <p className="text-sm text-muted-foreground">Chào buổi sáng, đây là tổng quan công việc của bạn.</p>
       </header>
 
       <Suspense fallback={<DashboardSkeleton />}>
@@ -34,7 +32,6 @@ export default async function DashboardPage() {
 }
 
 async function DashboardContent() {
-  // Fetch song song để tối ưu tốc độ
   const [role, data] = await Promise.all([
     getUserRole(),
     getStudentSummary()
@@ -42,42 +39,47 @@ async function DashboardContent() {
 
   if (role === 'mentor') {
     return (
-      <div className="h-[60vh] flex flex-col items-center justify-center text-center space-y-4 animate-in fade-in zoom-in-95 duration-500">
-        <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center">
-          <LayoutGrid className="w-10 h-10 text-primary animate-pulse" />
-        </div>
-        <h1 className="text-2xl font-bold">Mentor Dashboard</h1>
-        <p className="text-muted-foreground max-w-xs">
-          Hệ thống đang được xây dựng. Vui lòng quay lại sau ở Phase 7!
+      <div className="h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-secondary/20 rounded-2xl border border-dashed">
+        <LayoutGrid className="w-12 h-12 text-muted-foreground mb-4" />
+        <h2 className="text-xl font-bold">Bảng điều khiển Mentor</h2>
+        <p className="text-muted-foreground mt-1 max-w-xs">
+          Tính năng dành cho Mentor đang được cập nhật.
         </p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Header-like Section for Stats */}
-      <section className="space-y-6">
-        <StatsCards stats={data.stats} />
-        <QuickActionDrawer />
+    <div className="space-y-12 animate-in fade-in duration-500">
+      {/* Quick Stats Grid */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Chỉ số hôm nay</h2>
+          <QuickActionDrawer />
+        </div>
+        <div className="bg-card rounded-2xl border shadow-sm">
+          <StatsCards stats={data.stats} />
+        </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Main Feed Section (Left/Center on Desktop) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-12">
-          {/* Dòng chảy tiến bộ (Momentum Engine) */}
-          <Suspense fallback={<ActivitySkeleton />}>
-            <MomentumFeed />
-          </Suspense>
+          {/* Main Content: Activity Feed */}
+          <section className="space-y-6">
+            <h2 className="text-lg font-bold">Hoạt động gần đây</h2>
+            <Suspense fallback={<ActivitySkeleton />}>
+              <MomentumFeed />
+            </Suspense>
+          </section>
 
-          {/* Mục tiêu đang chạy */}
+          {/* Goals Section */}
           {data.activeGoals.length > 0 && (
             <section className="space-y-6">
-              <div className="flex items-center justify-between px-1 border-b pb-2 border-border/40">
-                <h2 className="text-xl font-bold tracking-tight">Mục tiêu đang chạy</h2>
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-md">
-                  Active
-                </span>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold">Mục tiêu quan trọng</h2>
+                <Link href="/goals" className="text-sm font-semibold text-primary hover:underline">
+                  Tất cả
+                </Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {data.activeGoals.slice(0, 4).map(goal => (
@@ -88,23 +90,28 @@ async function DashboardContent() {
           )}
         </div>
 
-        {/* Secondary Info (Right Sidebar on Desktop) */}
+        {/* Sidebar Info */}
         <div className="space-y-12">
-          {/* Ghi chú mới nhất */}
-          <section className="bg-secondary/10 rounded-[2.5rem] p-8 border border-border/40">
-            <RecentNotes notes={data.recentNotes} />
+          {/* Notes Card */}
+          <section className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold">Ghi chú</h2>
+              <Link href="/notes" className="text-sm font-semibold text-primary hover:underline">
+                Xem thêm
+              </Link>
+            </div>
+            <div className="bg-card rounded-2xl border shadow-sm overflow-hidden">
+              <RecentNotes notes={data.recentNotes} />
+            </div>
           </section>
 
-          {/* Productivity Tip or Small Static Card (Polish) */}
-          <div className="bg-primary/5 rounded-[2rem] p-6 border border-primary/10">
-            <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Productivity Tip
-            </h4>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Tập trung vào 3 nhiệm vụ quan trọng nhất mỗi ngày để đạt được đà tiến bộ bền vững nhất.
+          {/* Daily Quote / Insight */}
+          <section className="p-6 bg-primary/5 rounded-2xl border border-primary/10">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 mb-3">Lời khuyên</p>
+            <p className="text-sm font-medium leading-relaxed italic">
+              "Tập trung vào 3 nhiệm vụ quan trọng nhất mỗi ngày để đạt được tiến bộ bền vững nhất."
             </p>
-          </div>
+          </section>
         </div>
       </div>
     </div>

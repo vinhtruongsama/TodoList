@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { AppNotification } from '@/types'
 import { NotificationItem } from './notification-item'
 import { BellOff, CheckCheck } from 'lucide-react'
@@ -16,9 +17,22 @@ export function NotificationList({ notifications }: NotificationListProps) {
 
   if (notifications.length === 0) {
     return (
-      <div className="text-center py-20 bg-accent/10 rounded-[2.5rem] border-2 border-dashed border-accent/20">
-        <BellOff className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-        <p className="text-muted-foreground font-medium">Bạn không có thông báo nào.</p>
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-secondary/20 rounded-2xl border border-dashed border-border/60">
+        <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center shadow-sm mb-4">
+          <BellOff className="w-8 h-8 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-bold">Hộp thư trống</h3>
+        <p className="text-sm text-muted-foreground mt-2 max-w-[280px]">
+          Bạn sẽ nhận được thông báo khi Mentor phản hồi hoặc khi bạn đạt được những cột mốc quan trọng.
+        </p>
+        <div className="mt-8 flex gap-3">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/">Bảng điều khiển</Link>
+          </Button>
+          <Button size="sm" asChild>
+            <Link href="/tasks">Xem nhiệm vụ</Link>
+          </Button>
+        </div>
       </div>
     )
   }

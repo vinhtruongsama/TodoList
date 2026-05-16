@@ -8,11 +8,10 @@ export default async function NotesPage() {
   const notes = await getNotes()
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-8 pb-24">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight text-orange-600 dark:text-orange-500">Sổ tay học tập</h1>
-        <p className="text-muted-foreground flex items-center gap-2 mt-1">
-          <StickyNote className="w-4 h-4 text-orange-400" />
+    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-10 pb-32">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Sổ tay học tập</h1>
+        <p className="text-sm text-muted-foreground">
           Nơi lưu giữ kiến thức và kinh nghiệm của bạn.
         </p>
       </header>
